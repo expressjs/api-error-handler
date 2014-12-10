@@ -1,0 +1,33 @@
+{
+  "name": "api-error-handler",
+  "description": "Express error handlers for JSON APIs",
+  "version": "0.0.0",
+  "author": "Jonathan Ong <me@jongleberry.com> (http://jongleberry.com)",
+  "license": "MIT",
+  "repository": "expressjs/api-error-handler",
+  "dependencies": {
+    "statuses": "^1.2.0"
+  },
+  "devDependencies": {
+    "express": "^4.10.4",
+    "http-errors": "^1.2.8",
+    "istanbul": "0",
+    "mocha": "2",
+    "supertest": "^0.15.0"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot",
+    "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter dot"
+  },
+  "keywords": [
+    "express",
+    "error",
+    "handler",
+    "api",
+    "json"
+  ],
+  "files": [
+    "index.js"
+  ]
+}
