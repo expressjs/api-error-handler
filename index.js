@@ -1,10 +1,18 @@
 
 var statuses = require('statuses');
 
-var production = process.env.NODE_ENV === 'production';
 
-module.exports = function () {
+module.exports = function (options) {
   return function apiErrorHandler(err, req, res, next) {
+    var stack = true, opts = options || {};
+    opts.noStackEnvs = opts.hasOwnProperty('noStackEnvs')? opts.noStackEnvs: 'production'; // allow for empty string (stack for all)
+    if(typeof(opts.noStackEnvs) != 'string') throw new Error('noStackEnvs option must be a string')
+
+    opts.noStackEnvs.split(',').forEach(function(env) {
+      if(env.trim() == process.env.NODE_ENV.toLowerCase())
+        stack = false;
+    })
+
     var status = err.status || err.statusCode || 500;
     if (status < 400) status = 500;
     res.statusCode = status;
@@ -13,9 +21,7 @@ module.exports = function () {
       status: status
     };
 
-    // show the stacktrace when not in production
-    // TODO: make this an option
-    if (!production) body.stack = err.stack;
+    if (stack) body.stack = err.stack;
 
     // internal server errors
     if (status >= 500) {
