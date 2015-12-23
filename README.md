@@ -30,7 +30,16 @@ app.use('/api', api);
 
 ### .use(errorHandler([options]))
 
-Currently no options.
+Returns middleware that handle errors.
+
+#### Options
+
+The `errorHandler` function takes an option `options` object that may contain any of
+the following keys:
+
+##### log
+
+The `log` option, if supplied, is called as `log(err, req, res)` when errors with status 500 and above occur.
 
 ### Errors
 
