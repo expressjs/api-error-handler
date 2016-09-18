@@ -30,7 +30,8 @@ app.use('/api', api);
 
 ### .use(errorHandler([options]))
 
-Currently no options.
+**options**
+- `hideStack` hide stack if `true`, default `false`
 
 ### Errors
 

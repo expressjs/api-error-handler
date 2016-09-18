@@ -48,6 +48,33 @@ describe('API Error Handler', function () {
       assert.equal(body.status, 401);
       assert.equal(body.type, 'a');
       assert.equal(body.code, 'b');
+      assert.notEqual(body.stack, undefined);
+      done();
+    })
+  })
+
+  it('hide stack', function (done) {
+    var app = express();
+    app.use(function (req, res, next) {
+      next(error(401, 'lol', {
+        type: 'a',
+        code: 'b'
+      }));
+    });
+    app.use(handler({ hideStack: true }));
+
+    request(app.listen())
+    .get('/')
+    .expect(401)
+    .end(function (err, res) {
+      assert.ifError(err);
+
+      var body = res.body;
+      assert.equal(body.message, 'lol');
+      assert.equal(body.status, 401);
+      assert.equal(body.type, 'a');
+      assert.equal(body.code, 'b');
+      assert.equal(body.stack, undefined);
       done();
     })
   })
