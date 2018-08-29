@@ -30,7 +30,9 @@ app.use('/api', api);
 
 ### .use(errorHandler([options]))
 
-Currently no options.
+Options:
+
+- `exposeAdditionalProperties` - If truthy will expose any additional properties found on client errors.
 
 ### Errors
 
