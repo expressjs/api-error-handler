@@ -51,4 +51,24 @@ describe('API Error Handler', function () {
       done();
     })
   })
+
+  it('exposeAdditionalProperties', function (done) {
+    var app = express();
+    app.use(function (req, res, next) {
+      next(error(401, { foobar: 123 }));
+    });
+    app.use(handler({ exposeAdditionalProperties: true }));
+
+    request(app.listen())
+    .get('/')
+    .expect(401)
+    .end(function (err, res) {
+      assert.ifError(err);
+
+      var body = res.body;
+      assert.equal(body.foobar, 123);
+      assert.equal(body.status, 401);
+      done();
+    })
+  })
 })

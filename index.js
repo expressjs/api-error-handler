@@ -3,7 +3,9 @@ var statuses = require('statuses');
 
 var production = process.env.NODE_ENV === 'production';
 
-module.exports = function () {
+module.exports = function (options) {
+  options = options || {}
+
   return function apiErrorHandler(err, req, res, next) {
     var status = err.status || err.statusCode || 500;
     if (status < 400) status = 500;
@@ -31,6 +33,12 @@ module.exports = function () {
     if (err.code) body.code = err.code;
     if (err.name) body.name = err.name;
     if (err.type) body.type = err.type;
+
+    if (options.exposeAdditionalProperties) {
+      for (var key in err) {
+        if (err.hasOwnProperty(key) && !(key in body)) body[key] = err[key]
+      }
+    }
 
     res.json(body);
   }
