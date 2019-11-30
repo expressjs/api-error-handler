@@ -51,4 +51,44 @@ describe('API Error Handler', function () {
       done();
     })
   })
+
+  it('shows error stack if not production', function (done) {
+    var app = express();
+    app.use(function (req, res, next) {
+      next(error(501, 'lol'));
+    });
+    app.use(handler());
+
+    request(app.listen())
+    .get('/')
+    .expect(501)
+    .end(function (err, res) {
+      assert.ifError(err);
+
+      var body = res.body;
+      assert.notEqual(body.stack, undefined);
+      assert.notEqual(process.env.NODE_ENV, 'production');
+      done();
+    })
+  })
+
+  it('does not show error stack if explicitly disabled', function (done) {
+    var app = express();
+    app.use(function (req, res, next) {
+      next(error(501, 'lol'));
+    });
+    app.use(handler({ isStackShown: false }));
+
+    request(app.listen())
+    .get('/')
+    .expect(501)
+    .end(function (err, res) {
+      assert.ifError(err);
+
+      var body = res.body;
+      assert.equal(body.stack, undefined);
+      assert.notEqual(process.env.NODE_ENV, 'production');
+      done();
+    })
+  })
 })
