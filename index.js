@@ -1,9 +1,20 @@
 
 var statuses = require('statuses');
 
-var production = process.env.NODE_ENV === 'production';
+var isProduction = process.env.NODE_ENV === 'production';
 
-module.exports = function () {
+module.exports = function (options) {
+	var opts = options || {}
+
+	if (typeof opts.showStack === 'undefined') {
+		// if showStack is not set, set it to false when in production
+		// otherwise, if not set and not in production, set it to true
+		opts.showStack = !isProduction
+		}
+	if (typeof opts.showStack !== 'boolean') {
+			throw new Error('Expected boolean value for showStack option')
+		}
+
   return function apiErrorHandler(err, req, res, next) {
     var status = err.status || err.statusCode || 500;
     if (status < 400) status = 500;
@@ -13,9 +24,7 @@ module.exports = function () {
       status: status
     };
 
-    // show the stacktrace when not in production
-    // TODO: make this an option
-    if (!production) body.stack = err.stack;
+    if (opts.showStack) body.stack = err.stack;
 
     // internal server errors
     if (status >= 500) {
