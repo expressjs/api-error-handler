@@ -30,7 +30,34 @@ app.use('/api', api);
 
 ### .use(errorHandler([options]))
 
-Currently no options.
+Can optionally pass an object of options:
+
+- `showStack` -- Boolean, will include the stack trace in response sent to client for errors. The default behavior when no option is set is to show stack traces when `process.env.NODE_ENV !== 'production'`. Setting `showStack` option will override the default behavior. You can check yourself what environment the code is running in, and set the option accordingly:
+
+```js
+var errorHandler = require("api-error-handler");
+
+var api = new express.Router();
+api.get("/users/:userid", function(req, res, next) {});
+
+function shouldShowStack() {
+  var environment = process.env.NODE_ENV;
+  switch (environment) {
+    // no stack for production or testing environment
+    case "production":
+    case "testing":
+      return false;
+    // include stack in dev or when NODE_ENV is not set
+    case "dev":
+    default:
+      return true;
+  }
+}
+
+api.use(errorHandler({ showStack: shouldShowStack() }));
+
+app.use("/api", api);
+```
 
 ### Errors
 
