@@ -50,5 +50,18 @@ describe('API Error Handler', function () {
       assert.equal(body.code, 'b');
       done();
     })
-  })
+	})
+	it('throws if showStack is passed with a non boolean value', function() {
+		var app = express();
+		assert.throws(function() {
+			app.use(handler({showStack: null}))
+			})
+		assert.throws(function() {
+			app.use(handler({showStack: function() {return}}))
+			})
+		assert.throws(function() {
+			app.use(handler({showStack: 'dev'}))
+			})
+
+	})
 })

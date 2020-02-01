@@ -7,7 +7,7 @@ module.exports = function (options) {
 	var opts = options || {}
 
 	if (typeof opts.showStack === 'undefined') {
-		// if showStack is not set, set it to false when in production
+		// if showStack is not set, or undefined, set it to false when in production
 		// otherwise, if not set and not in production, set it to true
 		opts.showStack = !isProduction
 		}
